@@ -12,5 +12,7 @@ func SetupRoutes(r *gin.Engine) {
 	{
 		api.GET("/projects", middlewares.PaginateMiddleware, handlers.GetAllProjectsHandler)
 		api.GET("/projects/:id", handlers.GetOneProjectHandler)
+
+		api.POST("/auth/register", handlers.Register)
 	}
 }
