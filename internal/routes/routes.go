@@ -10,7 +10,7 @@ import (
 func SetupRoutes(r *gin.Engine) {
 	api := r.Group("/api", midlewares.ApiKeyMiddleware)
 	{
-		api.GET("/projects", handlers.ProjectsHandler)
-		api.GET("/projects/:id", handlers.GetProjectHandler)
+		api.GET("/projects", handlers.GetAllProjectsHandler)
+		api.GET("/projects/:id", handlers.GetOneProjectHandler)
 	}
 }
