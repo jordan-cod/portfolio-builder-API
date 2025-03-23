@@ -8,6 +8,9 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine) {
+
+	r.Use(middlewares.CORSConfig())
+
 	api := r.Group("/api", middlewares.ApiKeyMiddleware)
 	{
 		api.GET("/projects", middlewares.PaginateMiddleware, handlers.GetAllProjectsHandler)
