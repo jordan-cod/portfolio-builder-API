@@ -5,9 +5,11 @@ import (
 	"log"
 	"os"
 	"portfolio-backend/internal/models"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
@@ -22,8 +24,19 @@ func ConnectBD() error {
 
 	dsn := fmt.Sprintf("user=%s password=%s dbname=%s host=%s port=%s sslmode=%s", user, password, dbname, host, port, sslmode)
 
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold: 1 * time.Second,
+			LogLevel:      logger.Error,
+			Colorful:      true,
+		},
+	)
+
 	var err error
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: newLogger,
+	})
 	if err != nil {
 		return fmt.Errorf("erro ao conectar ao banco de dados: %w", err)
 	}
