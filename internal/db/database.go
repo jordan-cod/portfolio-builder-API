@@ -41,7 +41,10 @@ func ConnectBD() error {
 		return fmt.Errorf("erro ao conectar ao banco de dados: %w", err)
 	}
 
-	err = DB.AutoMigrate(&models.Project{})
+	err = DB.AutoMigrate(
+		&models.User{},
+		&models.Project{},
+	)
 	if err != nil {
 		return fmt.Errorf("erro ao realizar a migração do banco de dados: %w", err)
 	}

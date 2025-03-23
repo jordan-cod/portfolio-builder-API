@@ -16,4 +16,7 @@ type Project struct {
 	LiveUrl     string         `json:"liveUrl"`
 	Image       string         `json:"image"`
 	CreatedAt   time.Time      `json:"createdAt" gorm:"autoCreateTime; not null; default:now()"`
+	UpdatedAt   time.Time      `json:"updatedAt" gorm:"autoUpdateTime; not null; default:now()"`
+
+	UserID uuid.UUID `json:"user_id" gorm:"type:uuid;not null"`
 }
