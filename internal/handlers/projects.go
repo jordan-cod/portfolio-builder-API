@@ -5,42 +5,30 @@ import (
 	"net/http"
 	"portfolio-backend/internal/db"
 	"portfolio-backend/internal/models"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func GetAllProjectsHandler(c *gin.Context) {
-
-	pageStr := c.DefaultQuery("page", "1")
-	limitStr := c.DefaultQuery("size", "10")
-
-	page, err := strconv.Atoi(pageStr)
-
-	if err != nil || page <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Página inválida"})
-		return
-	}
-	limit, err := strconv.Atoi(limitStr)
-	if err != nil || limit <= 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Tamanho inválido"})
-		return
-	}
+	page := c.MustGet("page").(int)
+	limit := c.MustGet("limit").(int)
 
 	var projects []models.Project
 	var totalCount int64
 
-	if err := db.DB.Model(&models.Project{}).Count(&totalCount).Error; err != nil {
+	query := db.DB.Model(&models.Project{})
+
+	if err := query.Count(&totalCount).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao contar projetos"})
 		log.Println("Erro ao contar projetos:", err)
 		return
 	}
+
 	offset := (page - 1) * limit
 
-	result := db.DB.Offset(offset).Limit(limit).Find(&projects)
-	if result.Error != nil {
+	if err := query.Offset(offset).Limit(limit).Find(&projects).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar projetos"})
-		log.Println("Erro ao buscar projetos:", result.Error)
+		log.Println("Erro ao buscar projetos:", err)
 		return
 	}
 
