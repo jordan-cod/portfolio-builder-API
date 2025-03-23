@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"portfolio-backend/config"
+	"portfolio-backend/internal/config"
 	"portfolio-backend/internal/db"
 	"portfolio-backend/internal/routes"
 

@@ -2,17 +2,27 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+	"portfolio-backend/internal/db"
 	"portfolio-backend/internal/models"
 )
 
 func ProjectsHandler(w http.ResponseWriter, r *http.Request) {
-	projects := []models.Project{
-		{ID: "1", Name: "Projeto Rádio Browser", Description: "Uma plataforma de rádio online", TechStack: []string{"React", "Vite", "Tailwind", "Node.js"}},
-		{ID: "2", Name: "Portfólio", Description: "Meu site pessoal", TechStack: []string{"Next.js", "Golang", "TypeScript"}},
+	var projects []models.Project
+
+	result := db.DB.Find(&projects)
+	if result.Error != nil {
+		http.Error(w, "Erro ao buscar projetos", http.StatusInternalServerError)
+		log.Println("Erro ao buscar projetos:", result.Error)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(projects)
+	err := json.NewEncoder(w).Encode(projects)
+	if err != nil {
+		http.Error(w, "Erro ao codificar resposta", http.StatusInternalServerError)
+		log.Println("Erro ao codificar resposta:", err)
+	}
 }
