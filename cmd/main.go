@@ -1,15 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
+
+	"portfolio-backend/internal/routes"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Backend do meu portfólio rodando! 🚀")
-	})
+	r := chi.NewRouter()
+
+	routes.SetupRoutes(r)
+
 	log.Println("Servidor rodando na porta 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
