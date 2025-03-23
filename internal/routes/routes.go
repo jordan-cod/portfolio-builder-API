@@ -3,11 +3,13 @@ package routes
 import (
 	"portfolio-backend/internal/handlers"
 
-	"github.com/go-chi/chi/v5"
+	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(r *chi.Mux) {
-
-	r.Get("/projects", handlers.ProjectsHandler)
-
+func SetupRoutes(r *gin.Engine) {
+	api := r.Group("/api")
+	{
+		api.GET("/projects", handlers.ProjectsHandler)
+		api.GET("/projects/:id", handlers.GetProjectHandler)
+	}
 }

@@ -8,7 +8,7 @@ import (
 	"portfolio-backend/internal/db"
 	"portfolio-backend/internal/routes"
 
-	"github.com/go-chi/chi/v5"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 		log.Fatalf("Erro ao conectar com o banco de dados: %v", err)
 	}
 
-	r := chi.NewRouter()
+	r := gin.Default()
 
 	routes.SetupRoutes(r)
 
