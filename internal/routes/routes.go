@@ -13,10 +13,11 @@ func SetupRoutes(r *gin.Engine) {
 	api := r.Group("/api")
 	{
 		api.POST("/register", handlers.Register)
+		api.GET("/health", handlers.HealthCheck)
 
 		projects := api.Group("/projects", middlewares.APIKeyAuthMiddleware())
 		{
-			projects.GET("", middlewares.PaginateMiddleware, handlers.GetAllProjectsHandler)
+			projects.GET("/", middlewares.PaginateMiddleware, handlers.GetAllProjectsHandler)
 			projects.GET("/:id", handlers.GetOneProjectHandler)
 		}
 	}
