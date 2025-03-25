@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"portfolio-backend/internal/models"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -41,13 +40,13 @@ func ConnectBD() error {
 		return fmt.Errorf("erro ao conectar ao banco de dados: %w", err)
 	}
 
-	err = DB.AutoMigrate(
-		&models.User{},
-		&models.Project{},
-	)
-	if err != nil {
-		return fmt.Errorf("erro ao realizar a migração do banco de dados: %w", err)
-	}
+	// err = DB.AutoMigrate(
+	// 	&models.User{},
+	// 	&models.Project{},
+	// )
+	// if err != nil {
+	// 	return fmt.Errorf("erro ao realizar a migração do banco de dados: %w", err)
+	// }
 
 	log.Println("Banco de dados conectado e migrado com sucesso!")
 	return nil
