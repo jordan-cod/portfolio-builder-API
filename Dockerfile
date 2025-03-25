@@ -6,4 +6,4 @@ COPY . .
 
 RUN make build
 
-CMD ["$(BIN_DIR)/$(APP_NAME)"]
+CMD ["./bin/portfolio-backend"]
