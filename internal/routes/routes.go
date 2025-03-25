@@ -8,14 +8,16 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine) {
-
 	r.Use(middlewares.CORSConfig())
 
-	api := r.Group("/api", middlewares.ApiKeyMiddleware)
+	api := r.Group("/api")
 	{
-		api.GET("/projects", middlewares.PaginateMiddleware, handlers.GetAllProjectsHandler)
-		api.GET("/projects/:id", handlers.GetOneProjectHandler)
+		api.POST("/register", handlers.Register)
 
-		api.POST("/auth/register", handlers.Register)
+		projects := api.Group("/projects", middlewares.APIKeyAuthMiddleware())
+		{
+			projects.GET("", middlewares.PaginateMiddleware, handlers.GetAllProjectsHandler)
+			projects.GET("/:id", handlers.GetOneProjectHandler)
+		}
 	}
 }

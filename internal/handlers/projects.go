@@ -13,10 +13,12 @@ func GetAllProjectsHandler(c *gin.Context) {
 	page := c.MustGet("page").(int)
 	limit := c.MustGet("limit").(int)
 
+	user := c.MustGet("user").(models.User)
+
 	var projects []models.Project
 	var totalCount int64
 
-	query := db.DB.Model(&models.Project{})
+	query := db.DB.Model(&models.Project{}).Where("user_id = ?", user.ID)
 
 	if err := query.Count(&totalCount).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao contar projetos"})
@@ -42,10 +44,11 @@ func GetAllProjectsHandler(c *gin.Context) {
 
 func GetOneProjectHandler(c *gin.Context) {
 	projectID := c.Param("id")
+	user := c.MustGet("user").(models.User)
 
 	var project models.Project
 
-	result := db.DB.First(&project, "id = ?", projectID)
+	result := db.DB.First(&project, "id = ? AND user_id = ?", projectID, user.ID)
 	if result.Error != nil {
 		if result.Error.Error() == "record not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Projeto não encontrado"})

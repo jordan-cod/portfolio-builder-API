@@ -19,4 +19,5 @@ type Project struct {
 	UpdatedAt   time.Time      `json:"updatedAt" gorm:"autoUpdateTime; not null; default:now()"`
 
 	UserID uuid.UUID `json:"user_id" gorm:"type:uuid;not null"`
+	User   User      `json:"-" gorm:"foreignKey:UserID;references:ID"`
 }
