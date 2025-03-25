@@ -6,4 +6,6 @@ COPY . .
 
 RUN make build
 
+RUN printenv > .env
+
 CMD ["./bin/portfolio-backend"]
