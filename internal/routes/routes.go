@@ -19,6 +19,7 @@ func SetupRoutes(r *gin.Engine) {
 		{
 			projects.GET("/", middlewares.PaginateMiddleware, handlers.GetAllProjectsHandler)
 			projects.GET("/:id", handlers.GetOneProjectHandler)
+			projects.DELETE("/:id", handlers.DeleteProjectHandler)
 		}
 	}
 }

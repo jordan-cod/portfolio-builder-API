@@ -61,3 +61,22 @@ func GetOneProjectHandler(c *gin.Context) {
 
 	c.JSON(200, project)
 }
+
+func DeleteProjectHandler(c *gin.Context) {
+	projectID := c.Param("id")
+	user := c.MustGet("user").(models.User)
+
+	result := db.DB.Delete(&models.Project{}, "id = ? AND user_id = ?", projectID, user.ID)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao excluir projeto"})
+		log.Println("Erro ao excluir projeto:", result.Error)
+		return
+	}
+
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Projeto não encontrado"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Projeto excluído com sucesso"})
+}
