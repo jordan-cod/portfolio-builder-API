@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Alterar toda lógica de negócios para arquivos de service
+
 func GetAllProjectsHandler(c *gin.Context) {
 	page := c.MustGet("page").(int)
 	limit := c.MustGet("limit").(int)
