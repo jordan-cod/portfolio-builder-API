@@ -14,7 +14,7 @@ import (
 type User struct {
 	ID        uuid.UUID `json:"id" gorm:"primaryKey; type:uuid; default:gen_random_uuid()"`
 	Name      string    `json:"name" gorm:"not null"`
-	Email     string    `json:"email" gorm:"not null"`
+	Email     string    `json:"email" gorm:"not null; unique"`
 	Password  string    `json:"password" gorm:"not null"`
 	APIKey    string    `json:"api_key" gorm:"not null; unique"`
 	CreatedAt time.Time `json:"createdAt" gorm:"autoCreateTime; not null; default:now()"`
