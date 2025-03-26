@@ -62,6 +62,55 @@ func GetOneProjectHandler(c *gin.Context) {
 	c.JSON(200, project)
 }
 
+// TODO: adicionar validações de campos e melhorar retorno de erros
+func CreateProjectHandler(c *gin.Context) {
+	var project models.Project
+	user := c.MustGet("user").(models.User)
+
+	if err := c.ShouldBindJSON(&project); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
+		log.Println("Erro ao bindar dados:", err)
+		return
+	}
+
+	project.UserID = user.ID
+
+	if err := db.DB.Create(&project).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar projeto"})
+		log.Println("Erro ao criar projeto:", err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, project)
+}
+
+// TODO: adicionar validações de campos e melhorar retorno de erros
+func UpdateProjectHandler(c *gin.Context) {
+	projectID := c.Param("id")
+	var project models.Project
+	user := c.MustGet("user").(models.User)
+
+	if err := c.ShouldBindJSON(&project); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
+		log.Println("Erro ao bindar dados:", err)
+		return
+	}
+
+	result := db.DB.Model(&models.Project{}).Where("id = ? AND user_id = ?", projectID, user.ID).Updates(project)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar projeto"})
+		log.Println("Erro ao atualizar projeto:", result.Error)
+		return
+	}
+
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Projeto não encontrado"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Projeto atualizado com sucesso"})
+}
+
 func DeleteProjectHandler(c *gin.Context) {
 	projectID := c.Param("id")
 	user := c.MustGet("user").(models.User)
