@@ -67,7 +67,7 @@ jobs:
                 REMOTE_HOST: ${{ vars.REMOTE_HOST }}
                 REMOTE_USER: portfolio
                 SOURCE: "bin/portfolio-backend bin/.env"
-                TARGET: "/home/portfolio/backend/portfolio-builder"
+                TARGET: "/home/portfolio/portfolio-builder/backend"
                 SCRIPT_AFTER: |
                     sudo chmod 774 /home/portfolio/portfolio-builder/backend/portfolio-backend
                     sudo chmod 644 /home/portfolio/portfolio-builder/backend/.env
