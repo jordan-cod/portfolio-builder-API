@@ -40,6 +40,7 @@ jobs:
                 echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> build/.env
                 echo "GIN_MODE=production" >> build/.env
                 cp bin/portfolio-backend build/
+                ls -al build
 
             - name: Verify build directory contents
               run: ls -al build
@@ -74,5 +75,4 @@ jobs:
                 SOURCE: "build/"
                 TARGET: "/home/portfolio/portfolio-builder/backend"
                 SCRIPT_AFTER: |
-                    sudo chmod 744 /home/portfolio/portfolio-builder/backend/portfolio-backend
                     sudo systemctl restart portfolio-builder
