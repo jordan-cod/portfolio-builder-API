@@ -4,7 +4,6 @@ on:
     pull_request:
         branches: ["main"]
         types: ["closed"]
-
     workflow_dispatch:
 
 jobs:
@@ -24,7 +23,7 @@ jobs:
             - name: Install dependencies
               run: go mod tidy
 
-            - name: Build
+            - name: Build the Go app
               run: make build
 
             - name: Create build directory and .env file
@@ -42,30 +41,6 @@ jobs:
                 cp bin/portfolio-backend build/
                 ls -al build
 
-            - name: Verify build directory contents
-              run: ls -al build
-
-            - name: Upload artifact
-              uses: actions/upload-artifact@v4
-              with:
-                name: go-app
-                path: build/
-
-    deploy:
-        name: Deploy to AWS
-        needs: build
-        runs-on: ubuntu-latest
-
-        steps:
-            - name: Download artifact
-              uses: actions/download-artifact@v4
-              with:
-                name: go-app
-                path: build/
-
-            - name: Check downloaded files
-              run: ls -al build/
-
             - name: Send build folder to AWS
               uses: easingthemes/ssh-deploy@main
               with:
@@ -75,4 +50,4 @@ jobs:
                 SOURCE: "build/"
                 TARGET: "/home/portfolio/portfolio-builder/backend"
                 SCRIPT_AFTER: |
-                    sudo systemctl restart portfolio-builder
+                    sudo systemctl restart portfolio-builder.service
