@@ -61,7 +61,7 @@ jobs:
               with:
                 name: go-app
                 path: build/
-                
+
             - name: Check downloaded files
               run: ls -al build/
 
@@ -74,6 +74,5 @@ jobs:
                 SOURCE: "build/"
                 TARGET: "/home/portfolio/portfolio-builder/backend"
                 SCRIPT_AFTER: |
-                    sudo chmod 774 /home/portfolio/portfolio-builder/backend/portfolio-backend
-                    sudo chmod 644 /home/portfolio/portfolio-builder/backend/.env
+                    sudo chmod 744 /home/portfolio/portfolio-builder/backend/portfolio-backend
                     sudo systemctl restart portfolio-builder
