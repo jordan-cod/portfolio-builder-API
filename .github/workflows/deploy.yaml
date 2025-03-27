@@ -27,27 +27,29 @@ jobs:
             - name: Build
               run: make build
 
-            - name: Create .env file
+            - name: Create build directory and .env file
               run: |
-                echo "DEPLOY_ENV=production" >> bin/.env
-                echo "DB_USER=${{ vars.DB_USER }}" >> bin/.env
-                echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> bin/.env
-                echo "DB_NAME=${{ vars.DB_NAME }}" >> bin/.env
-                echo "DB_HOST=${{ vars.DB_HOST }}" >> bin/.env
-                echo "DB_PORT=${{ vars.DB_PORT }}" >> bin/.env
-                echo "DB_SSLMODE=${{ vars.DB_SSLMODE }}" >> bin/.env
-                echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> bin/.env
-                echo "GIN_MODE=production" >> bin/.env
+                mkdir -p build
+                echo "DEPLOY_ENV=production" >> build/.env
+                echo "DB_USER=${{ vars.DB_USER }}" >> build/.env
+                echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> build/.env
+                echo "DB_NAME=${{ vars.DB_NAME }}" >> build/.env
+                echo "DB_HOST=${{ vars.DB_HOST }}" >> build/.env
+                echo "DB_PORT=${{ vars.DB_PORT }}" >> build/.env
+                echo "DB_SSLMODE=${{ vars.DB_SSLMODE }}" >> build/.env
+                echo "CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}" >> build/.env
+                echo "GIN_MODE=production" >> build/.env
+                cp bin/portfolio-backend build/
 
+            - name: Verify build directory contents
+              run: ls -al build
 
             - name: Upload artifact
               uses: actions/upload-artifact@v4
               with:
                 name: go-app
-                path: |
-                  bin/portfolio-backend
-                  bin/.env
-    
+                path: build/
+
     deploy:
         name: Deploy to AWS
         needs: build
@@ -58,15 +60,18 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                 name: go-app
-                path: bin/
+                path: build/
+                
+            - name: Check downloaded files
+              run: ls -al build/
 
-            - name: Send files to AWS
+            - name: Send build folder to AWS
               uses: easingthemes/ssh-deploy@main
               with:
                 SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
                 REMOTE_HOST: ${{ vars.REMOTE_HOST }}
                 REMOTE_USER: portfolio
-                SOURCE: "bin/portfolio-backend bin/.env"
+                SOURCE: "build/"
                 TARGET: "/home/portfolio/portfolio-builder/backend"
                 SCRIPT_AFTER: |
                     sudo chmod 774 /home/portfolio/portfolio-builder/backend/portfolio-backend
