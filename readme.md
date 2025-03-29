@@ -19,7 +19,7 @@
 
 ## About
 
-**Portfolio Maker API** is an open-source project that provides developers with a robust API to create and manage their portfolios. With RESTful endpoints, users can easily manage projects, skills, and experiences, facilitating a seamless portfolio creation process. The project is built with Golang, enhancing development efficiency.
+**Portfolio Builder API** is an open-source project that provides developers with a robust API to create and manage their portfolios. With RESTful endpoints, users can easily manage projects, skills, and experiences, facilitating a seamless portfolio creation process. The project is built with Golang, enhancing development efficiency.
 
 ## <a name="contributing"> Contributing
 
@@ -33,8 +33,8 @@
 
 ## Contributors
 
-<a href="https://github.com/jordan-cod/portfolio-maker-api/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=jordan-cod/portfolio-maker-api" />
+<a href="https://github.com/jordan-cod/portfolio-builder-api/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=jordan-cod/portfolio-builder-api" />
 </a>
 
 ## LICENSE
