@@ -46,8 +46,8 @@ jobs:
               with:
                 SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
                 REMOTE_HOST: ${{ vars.REMOTE_HOST }}
-                REMOTE_USER: portfolio
+                REMOTE_USER: ubuntu
                 SOURCE: "build/"
-                TARGET: "/home/portfolio/portfolio-builder/backend"
+                TARGET: "~/portfolio-builder/backend"
                 SCRIPT_AFTER: |
                     sudo systemctl restart portfolio-builder.service
