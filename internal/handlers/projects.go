@@ -1,10 +1,13 @@
 package handlers
 
 import (
+	"encoding/csv"
+	"fmt"
 	"log"
 	"net/http"
 	"portfolio-backend/internal/db"
 	"portfolio-backend/internal/models"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -159,4 +162,46 @@ func FavoriteProjectHandler(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
+}
+
+func ExportProjectsToCSVHandler(c *gin.Context) {
+	user := c.MustGet("user").(models.User)
+
+	var projects []models.Project
+	if err := db.DB.Where("user_id = ?", user.ID).Find(&projects).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar projetos"})
+		log.Println("Erro ao buscar projetos:", err)
+		return
+	}
+
+	var csvContent []string
+	csvContent = append(csvContent, "ID,Nome,Descrição,Status,Repo URL,Tecnologias,Data de Criação")
+
+	for _, project := range projects {
+		line := fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s",
+			project.ID.String(),
+			project.Name,
+			project.Description,
+			project.Status,
+			project.GitHubUrl,
+			strings.Join(project.TechStack, "|"),
+			project.CreatedAt.Format("2006-01-02 15:04:05"),
+		)
+		csvContent = append(csvContent, line)
+	}
+
+	c.Header("Content-Type", "text/csv")
+	c.Header("Content-Disposition", "attachment;filename=projetos.csv")
+	c.Writer.WriteHeader(http.StatusOK)
+	csvWriter := csv.NewWriter(c.Writer)
+
+	for _, line := range csvContent {
+		record := strings.Split(line, ",")
+		if err := csvWriter.Write(record); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao gerar CSV"})
+			log.Println("Erro ao escrever no CSV:", err)
+			return
+		}
+	}
+	csvWriter.Flush()
 }

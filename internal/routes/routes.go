@@ -22,7 +22,10 @@ func SetupRoutes(r *gin.Engine) {
 			projects.GET("/:id", handlers.GetOneProjectHandler)
 			projects.PUT("/:id", handlers.UpdateProjectHandler)
 			projects.DELETE("/:id", handlers.DeleteProjectHandler)
+
 			projects.PATCH("/:id/favorite", handlers.FavoriteProjectHandler)
+
+			projects.GET("/export/csv", handlers.ExportProjectsToCSVHandler)
 		}
 	}
 }
