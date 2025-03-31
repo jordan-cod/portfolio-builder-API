@@ -7,10 +7,20 @@ import (
 	"net/http"
 	"portfolio-backend/internal/db"
 	"portfolio-backend/internal/models"
+	repository "portfolio-backend/internal/repositories"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 )
+
+var projectRepo *repository.ProjectRepository
+
+func getProjectRepo() *repository.ProjectRepository {
+	if projectRepo == nil {
+		projectRepo = repository.NewProjectRepository(db.DB)
+	}
+	return projectRepo
+}
 
 // Alterar toda lógica de negócios para arquivos de service
 
@@ -49,19 +59,20 @@ func GetAllProjectsHandler(c *gin.Context) {
 }
 
 func GetOneProjectHandler(c *gin.Context) {
+	projectRepo := getProjectRepo()
+
 	projectID := c.Param("id")
 	user := c.MustGet("user").(models.User)
 
-	var project models.Project
+	project, err := projectRepo.FindByUserID(projectID, user.ID)
 
-	result := db.DB.First(&project, "id = ? AND user_id = ?", projectID, user.ID)
-	if result.Error != nil {
-		if result.Error.Error() == "record not found" {
+	if err != nil {
+		if err.Error() == "record not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Projeto não encontrado"})
 		} else {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar projeto"})
 		}
-		log.Println("Erro ao buscar projeto:", result.Error)
+		log.Println("Erro ao buscar projeto:", err)
 		return
 	}
 
