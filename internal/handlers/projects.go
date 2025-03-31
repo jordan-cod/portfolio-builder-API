@@ -14,6 +14,8 @@ import (
 func GetAllProjectsHandler(c *gin.Context) {
 	page := c.MustGet("page").(int)
 	limit := c.MustGet("limit").(int)
+	sort := c.MustGet("sort").(string)
+	order := c.MustGet("order").(string)
 
 	user := c.MustGet("user").(models.User)
 
@@ -30,9 +32,8 @@ func GetAllProjectsHandler(c *gin.Context) {
 
 	offset := (page - 1) * limit
 
-	if err := query.Offset(offset).Limit(limit).Find(&projects).Error; err != nil {
+	if err := query.Order(sort + " " + order).Offset(offset).Limit(limit).Find(&projects).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar projetos"})
-		log.Println("Erro ao buscar projetos:", err)
 		return
 	}
 
