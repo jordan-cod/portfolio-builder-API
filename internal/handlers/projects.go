@@ -131,3 +131,31 @@ func DeleteProjectHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Projeto excluído com sucesso"})
 }
+
+func FavoriteProjectHandler(c *gin.Context) {
+	projectID := c.Param("id")
+	user := c.MustGet("user").(models.User)
+
+	var project models.Project
+
+	result := db.DB.First(&project, "id = ? AND user_id = ?", projectID, user.ID)
+	if result.Error != nil {
+		if result.Error.Error() == "record not found" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Projeto não encontrado ou não pertence a você"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar projeto"})
+		}
+		log.Println("Erro ao buscar projeto:", result.Error)
+		return
+	}
+
+	project.IsFavorited = !project.IsFavorited
+
+	if err := db.DB.Save(&project).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar favorito"})
+		log.Println("Erro ao atualizar favorito:", err)
+		return
+	}
+
+	c.Status(http.StatusNoContent)
+}

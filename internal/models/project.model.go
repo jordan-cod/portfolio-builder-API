@@ -26,6 +26,7 @@ type Project struct {
 	GitHubUrl   string         `json:"gitHubUrl"`
 	LiveUrl     string         `json:"liveUrl"`
 	Image       string         `json:"image"`
+	IsFavorited bool           `json:"isFavorited" gorm:"default:false;not null"`
 	CreatedAt   time.Time      `json:"createdAt" gorm:"autoCreateTime; not null; default:now()"`
 	UpdatedAt   time.Time      `json:"updatedAt" gorm:"autoUpdateTime; not null; default:now()"`
 
