@@ -1,0 +1,71 @@
+basePath: /api
+definitions:
+  models.ErrorResponse:
+    properties:
+      error:
+        example: Erro ao validar os dados
+        type: string
+    type: object
+  models.RegisterInput:
+    properties:
+      email:
+        example: joao@email.com
+        type: string
+      name:
+        example: João
+        type: string
+      password:
+        example: minhasenha123
+        type: string
+    type: object
+  models.RegisterResponse:
+    properties:
+      api_key:
+        example: meu-token-api-gerado
+        type: string
+      message:
+        example: Usuário cadastrado com sucesso
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Uma API open source para o gerenciamento de portfólios de desenvolvedores.
+  title: Portfolio Builder API
+  version: "1.0"
+paths:
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo usuário na plataforma com nome, email e senha
+      parameters:
+      - description: Dados para registro
+        in: body
+        name: registerData
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.RegisterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Registra um novo usuário
+      tags:
+      - auth
+swagger: "2.0"

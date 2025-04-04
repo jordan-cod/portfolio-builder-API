@@ -4,6 +4,9 @@ import (
 	"portfolio-backend/internal/handlers"
 	"portfolio-backend/internal/middlewares"
 
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,6 +15,7 @@ func SetupRoutes(r *gin.Engine) {
 
 	api := r.Group("/api")
 	{
+		api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		api.POST("/register", handlers.Register)
 		api.GET("/health", handlers.HealthCheck)
 
