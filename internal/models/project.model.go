@@ -17,6 +17,25 @@ const (
 	StatusNaoIniciado Status = "Não iniciado"
 )
 
+type ProjectSwagger struct {
+	ID          string   `json:"id" example:"1"`
+	Title       string   `json:"title" example:"Portfolio Builder"`
+	Description string   `json:"description" example:"Um criador de portfólios para devs"`
+	TechStack   []string `json:"techStack" example:"React,TypeScript,Node.js"`
+	Link        string   `json:"link" example:"https://meuportfolio.com"`
+	Image       string   `json:"image" example:"https://meuportfolio.com/capa.png"`
+	IsFavorite  bool     `json:"isFavorite" example:"false"`
+	CreatedAt   string   `json:"createdAt" example:"2025-04-04T12:00:00Z"`
+	UpdatedAt   string   `json:"updatedAt" example:"2025-04-04T12:00:00Z"`
+}
+
+type ProjectListResponse struct {
+	Data       []ProjectSwagger `json:"data"`
+	TotalCount int              `json:"totalCount"`
+	Page       int              `json:"page"`
+	Size       int              `json:"size"`
+}
+
 type Project struct {
 	ID          uuid.UUID      `json:"id" gorm:"primaryKey; type:uuid; default:gen_random_uuid()"`
 	Name        string         `json:"name" gorm:"not null"`

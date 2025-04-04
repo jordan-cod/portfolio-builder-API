@@ -12,6 +12,54 @@ definitions:
         example: ok
         type: string
     type: object
+  models.ProjectListResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/models.ProjectSwagger'
+        type: array
+      page:
+        type: integer
+      size:
+        type: integer
+      totalCount:
+        type: integer
+    type: object
+  models.ProjectSwagger:
+    properties:
+      createdAt:
+        example: "2025-04-04T12:00:00Z"
+        type: string
+      description:
+        example: Um criador de portfólios para devs
+        type: string
+      id:
+        example: "1"
+        type: string
+      image:
+        example: https://meuportfolio.com/capa.png
+        type: string
+      isFavorite:
+        example: false
+        type: boolean
+      link:
+        example: https://meuportfolio.com
+        type: string
+      techStack:
+        example:
+        - React
+        - TypeScript
+        - Node.js
+        items:
+          type: string
+        type: array
+      title:
+        example: Portfolio Builder
+        type: string
+      updatedAt:
+        example: "2025-04-04T12:00:00Z"
+        type: string
+    type: object
   models.RegisterInput:
     properties:
       email:
@@ -40,6 +88,248 @@ info:
   title: Portfolio Builder API
   version: "1.0"
 paths:
+  /api/projects:
+    get:
+      description: Retorna todos os projetos com paginação, ordenação e total de registros
+      parameters:
+      - description: Página atual
+        in: query
+        name: page
+        type: integer
+      - description: Tamanho da página
+        in: query
+        name: size
+        type: integer
+      - description: 'Campo para ordenar (ex: name, created_at)'
+        in: query
+        name: sort
+        type: string
+      - description: Ordem (asc ou desc)
+        in: query
+        name: order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProjectListResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Lista todos os projetos do usuário
+      tags:
+      - Projects
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo projeto para o usuário autenticado
+      parameters:
+      - description: Dados do projeto
+        in: body
+        name: project
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProjectSwagger'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.ProjectSwagger'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Cria um novo projeto
+      tags:
+      - Projects
+  /api/projects/{id}:
+    delete:
+      description: Remove um projeto do usuário autenticado
+      parameters:
+      - description: ID do projeto
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Deleta um projeto
+      tags:
+      - Projects
+    get:
+      description: Retorna um projeto específico do usuário autenticado
+      parameters:
+      - description: ID do projeto
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ProjectSwagger'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Busca um projeto por ID
+      tags:
+      - Projects
+    put:
+      consumes:
+      - application/json
+      description: Atualiza um projeto existente do usuário autenticado
+      parameters:
+      - description: ID do projeto
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Dados do projeto atualizado
+        in: body
+        name: project
+        required: true
+        schema:
+          $ref: '#/definitions/models.ProjectSwagger'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Atualiza um projeto
+      tags:
+      - Projects
+  /api/projects/{id}/favorite:
+    patch:
+      description: Alterna o status de favorito de um projeto do usuário
+      parameters:
+      - description: ID do projeto
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Favorita/Desfavorita um projeto
+      tags:
+      - Projects
+  /api/projects/export/csv:
+    get:
+      description: Exporta todos os projetos do usuário autenticado em formato CSV
+      produces:
+      - text/csv
+      responses:
+        "200":
+          description: Arquivo CSV
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Exporta projetos para CSV
+      tags:
+      - Projects
   /health:
     get:
       description: Retorna uma mensagem simples para indicar que o servidor está rodando
