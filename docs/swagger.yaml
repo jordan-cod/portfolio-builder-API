@@ -6,6 +6,12 @@ definitions:
         example: Erro ao validar os dados
         type: string
     type: object
+  models.HealthResponse:
+    properties:
+      message:
+        example: ok
+        type: string
+    type: object
   models.RegisterInput:
     properties:
       email:
@@ -34,6 +40,19 @@ info:
   title: Portfolio Builder API
   version: "1.0"
 paths:
+  /health:
+    get:
+      description: Retorna uma mensagem simples para indicar que o servidor está rodando
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HealthResponse'
+      summary: Verifica o status da API
+      tags:
+      - health
   /register:
     post:
       consumes:
