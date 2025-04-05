@@ -21,7 +21,7 @@ type ProjectSwagger struct {
 	ID          string   `json:"id" example:"1"`
 	Title       string   `json:"title" example:"Portfolio Builder"`
 	Description string   `json:"description" example:"Um criador de portfólios para devs"`
-	TechStack   []string `json:"techStack" example:"React,TypeScript,Node.js"`
+	TechStack   []string `json:"techStack" example:"[\"React\", \"TypeScript\", \"Node.js\"]"`
 	Link        string   `json:"link" example:"https://meuportfolio.com"`
 	Image       string   `json:"image" example:"https://meuportfolio.com/capa.png"`
 	IsFavorite  bool     `json:"isFavorite" example:"false"`

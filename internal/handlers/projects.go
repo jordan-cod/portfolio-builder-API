@@ -36,7 +36,7 @@ func getProjectRepo() *repository.ProjectRepository {
 // @Param        order  query     string  false  "Ordem (asc ou desc)"
 // @Success 200 {object} models.ProjectListResponse
 // @Failure      500    {object}  map[string]string
-// @Router       /api/projects [get]
+// @Router       /projects [get]
 func GetAllProjectsHandler(c *gin.Context) {
 	page := c.MustGet("page").(int)
 	limit := c.MustGet("limit").(int)
@@ -81,7 +81,7 @@ func GetAllProjectsHandler(c *gin.Context) {
 // @Success      200  {object}  models.ProjectSwagger
 // @Failure      404  {object}  map[string]string
 // @Failure      500  {object}  map[string]string
-// @Router       /api/projects/{id} [get]
+// @Router       /projects/{id} [get]
 func GetOneProjectHandler(c *gin.Context) {
 	projectRepo := getProjectRepo()
 
@@ -116,7 +116,7 @@ func GetOneProjectHandler(c *gin.Context) {
 // @Success      201      {object}  models.ProjectSwagger
 // @Failure      400      {object}  map[string]string
 // @Failure      500      {object}  map[string]string
-// @Router       /api/projects [post]
+// @Router       /projects [post]
 func CreateProjectHandler(c *gin.Context) {
 	var project models.Project
 	user := c.MustGet("user").(models.User)
@@ -153,7 +153,7 @@ func CreateProjectHandler(c *gin.Context) {
 // @Failure      400      {object}  map[string]string
 // @Failure      404      {object}  map[string]string
 // @Failure      500      {object}  map[string]string
-// @Router       /api/projects/{id} [put]
+// @Router       /projects/{id} [put]
 func UpdateProjectHandler(c *gin.Context) {
 	projectID := c.Param("id")
 	var project models.Project
@@ -190,7 +190,7 @@ func UpdateProjectHandler(c *gin.Context) {
 // @Success      200  {object}  map[string]string
 // @Failure      404  {object}  map[string]string
 // @Failure      500  {object}  map[string]string
-// @Router       /api/projects/{id} [delete]
+// @Router       /projects/{id} [delete]
 func DeleteProjectHandler(c *gin.Context) {
 	projectID := c.Param("id")
 	user := c.MustGet("user").(models.User)
@@ -220,7 +220,7 @@ func DeleteProjectHandler(c *gin.Context) {
 // @Success      204  {string}  string  "No Content"
 // @Failure      404  {object}  map[string]string
 // @Failure      500  {object}  map[string]string
-// @Router       /api/projects/{id}/favorite [patch]
+// @Router       /projects/{id}/favorite [patch]
 func FavoriteProjectHandler(c *gin.Context) {
 	projectID := c.Param("id")
 	user := c.MustGet("user").(models.User)
@@ -257,7 +257,7 @@ func FavoriteProjectHandler(c *gin.Context) {
 // @Produce      text/csv
 // @Success      200  {string}  string  "Arquivo CSV"
 // @Failure      500  {object}  map[string]string
-// @Router       /api/projects/export/csv [get]
+// @Router       /projects/export/csv [get]
 func ExportProjectsToCSVHandler(c *gin.Context) {
 	user := c.MustGet("user").(models.User)
 

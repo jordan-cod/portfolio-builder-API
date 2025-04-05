@@ -9,7 +9,27 @@
     "host": "localhost:8080",
     "basePath": "/api",
     "paths": {
-        "/api/projects": {
+        "/health": {
+            "get": {
+                "description": "Retorna uma mensagem simples para indicar que o servidor está rodando",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Verifica o status da API",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.HealthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects": {
             "get": {
                 "security": [
                     {
@@ -124,7 +144,7 @@
                 }
             }
         },
-        "/api/projects/export/csv": {
+        "/projects/export/csv": {
             "get": {
                 "security": [
                     {
@@ -158,7 +178,7 @@
                 }
             }
         },
-        "/api/projects/{id}": {
+        "/projects/{id}": {
             "get": {
                 "security": [
                     {
@@ -337,7 +357,7 @@
                 }
             }
         },
-        "/api/projects/{id}/favorite": {
+        "/projects/{id}/favorite": {
             "patch": {
                 "security": [
                     {
@@ -384,26 +404,6 @@
                             "additionalProperties": {
                                 "type": "string"
                             }
-                        }
-                    }
-                }
-            }
-        },
-        "/health": {
-            "get": {
-                "description": "Retorna uma mensagem simples para indicar que o servidor está rodando",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "Verifica o status da API",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.HealthResponse"
                         }
                     }
                 }
@@ -534,9 +534,9 @@
                         "type": "string"
                     },
                     "example": [
-                        "React",
-                        "TypeScript",
-                        "Node.js"
+                        "[\"React\"",
+                        " \"TypeScript\"",
+                        " \"Node.js\"]"
                     ]
                 },
                 "title": {

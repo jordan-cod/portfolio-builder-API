@@ -47,9 +47,9 @@ definitions:
         type: string
       techStack:
         example:
-        - React
-        - TypeScript
-        - Node.js
+        - '["React"'
+        - ' "TypeScript"'
+        - ' "Node.js"]'
         items:
           type: string
         type: array
@@ -88,7 +88,20 @@ info:
   title: Portfolio Builder API
   version: "1.0"
 paths:
-  /api/projects:
+  /health:
+    get:
+      description: Retorna uma mensagem simples para indicar que o servidor está rodando
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HealthResponse'
+      summary: Verifica o status da API
+      tags:
+      - health
+  /projects:
     get:
       description: Retorna todos os projetos com paginação, ordenação e total de registros
       parameters:
@@ -161,7 +174,7 @@ paths:
       summary: Cria um novo projeto
       tags:
       - Projects
-  /api/projects/{id}:
+  /projects/{id}:
     delete:
       description: Remove um projeto do usuário autenticado
       parameters:
@@ -276,7 +289,7 @@ paths:
       summary: Atualiza um projeto
       tags:
       - Projects
-  /api/projects/{id}/favorite:
+  /projects/{id}/favorite:
     patch:
       description: Alterna o status de favorito de um projeto do usuário
       parameters:
@@ -309,7 +322,7 @@ paths:
       summary: Favorita/Desfavorita um projeto
       tags:
       - Projects
-  /api/projects/export/csv:
+  /projects/export/csv:
     get:
       description: Exporta todos os projetos do usuário autenticado em formato CSV
       produces:
@@ -330,19 +343,6 @@ paths:
       summary: Exporta projetos para CSV
       tags:
       - Projects
-  /health:
-    get:
-      description: Retorna uma mensagem simples para indicar que o servidor está rodando
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.HealthResponse'
-      summary: Verifica o status da API
-      tags:
-      - health
   /register:
     post:
       consumes:

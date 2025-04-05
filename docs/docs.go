@@ -15,7 +15,27 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/projects": {
+        "/health": {
+            "get": {
+                "description": "Retorna uma mensagem simples para indicar que o servidor está rodando",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "health"
+                ],
+                "summary": "Verifica o status da API",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.HealthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/projects": {
             "get": {
                 "security": [
                     {
@@ -130,7 +150,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/projects/export/csv": {
+        "/projects/export/csv": {
             "get": {
                 "security": [
                     {
@@ -164,7 +184,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/projects/{id}": {
+        "/projects/{id}": {
             "get": {
                 "security": [
                     {
@@ -343,7 +363,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/projects/{id}/favorite": {
+        "/projects/{id}/favorite": {
             "patch": {
                 "security": [
                     {
@@ -390,26 +410,6 @@ const docTemplate = `{
                             "additionalProperties": {
                                 "type": "string"
                             }
-                        }
-                    }
-                }
-            }
-        },
-        "/health": {
-            "get": {
-                "description": "Retorna uma mensagem simples para indicar que o servidor está rodando",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "health"
-                ],
-                "summary": "Verifica o status da API",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.HealthResponse"
                         }
                     }
                 }
@@ -540,9 +540,9 @@ const docTemplate = `{
                         "type": "string"
                     },
                     "example": [
-                        "React",
-                        "TypeScript",
-                        "Node.js"
+                        "[\"React\"",
+                        " \"TypeScript\"",
+                        " \"Node.js\"]"
                     ]
                 },
                 "title": {
