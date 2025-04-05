@@ -26,7 +26,7 @@
 The Portfolio Builder API is fully documented using [Swagger (OpenAPI)](https://swagger.io/), allowing developers to easily explore and test all available endpoints.
 
 🔗 You can access the live, interactive API documentation here:  
-👉 [portfolio-builder.site/docs](https://portfolio-builder.site/api/swagger/index.html)
+👉 [portfolio-builder.site/docs](https://portfolio-builder.site/docs)
 
 This provides a user-friendly interface to view all routes, request/response formats, authentication requirements, and model schemas.
 
