@@ -81,7 +81,7 @@ definitions:
         example: Usuário cadastrado com sucesso
         type: string
     type: object
-host: localhost:8080
+host: https://portfolio-builder.site
 info:
   contact: {}
   description: Uma API open source para o gerenciamento de portfólios de desenvolvedores.
