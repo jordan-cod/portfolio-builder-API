@@ -9,8 +9,15 @@ import (
 	"portfolio-backend/internal/routes"
 
 	"github.com/gin-gonic/gin"
+
+	_ "portfolio-backend/docs"
 )
 
+// @title Portfolio Builder API
+// @version 1.0
+// @description Uma API open source para o gerenciamento de portfólios de desenvolvedores.
+// @host localhost:8080
+// @BasePath /api
 func main() {
 	config.LoadEnv()
 

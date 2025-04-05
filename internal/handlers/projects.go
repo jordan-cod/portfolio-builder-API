@@ -24,6 +24,19 @@ func getProjectRepo() *repository.ProjectRepository {
 
 // Alterar toda lógica de negócios para arquivos de service
 
+// GetAllProjectsHandler godoc
+// @Summary      Lista todos os projetos do usuário
+// @Description  Retorna todos os projetos com paginação, ordenação e total de registros
+// @Tags         Projects
+// @Security     ApiKeyAuth
+// @Produce      json
+// @Param        page   query     int     false  "Página atual"
+// @Param        size   query     int     false  "Tamanho da página"
+// @Param        sort   query     string  false  "Campo para ordenar (ex: name, created_at)"
+// @Param        order  query     string  false  "Ordem (asc ou desc)"
+// @Success 200 {object} models.ProjectListResponse
+// @Failure      500    {object}  map[string]string
+// @Router       /projects [get]
 func GetAllProjectsHandler(c *gin.Context) {
 	page := c.MustGet("page").(int)
 	limit := c.MustGet("limit").(int)
@@ -58,6 +71,17 @@ func GetAllProjectsHandler(c *gin.Context) {
 	})
 }
 
+// GetOneProjectHandler godoc
+// @Summary      Busca um projeto por ID
+// @Description  Retorna um projeto específico do usuário autenticado
+// @Tags         Projects
+// @Security     ApiKeyAuth
+// @Produce      json
+// @Param        id   path      string  true  "ID do projeto"
+// @Success      200  {object}  models.ProjectSwagger
+// @Failure      404  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /projects/{id} [get]
 func GetOneProjectHandler(c *gin.Context) {
 	projectRepo := getProjectRepo()
 
@@ -80,6 +104,19 @@ func GetOneProjectHandler(c *gin.Context) {
 }
 
 // TODO: adicionar validações de campos e melhorar retorno de erros
+
+// CreateProjectHandler godoc
+// @Summary      Cria um novo projeto
+// @Description  Cria um novo projeto para o usuário autenticado
+// @Tags         Projects
+// @Security     ApiKeyAuth
+// @Accept       json
+// @Produce      json
+// @Param        project  body      models.ProjectSwagger  true  "Dados do projeto"
+// @Success      201      {object}  models.ProjectSwagger
+// @Failure      400      {object}  map[string]string
+// @Failure      500      {object}  map[string]string
+// @Router       /projects [post]
 func CreateProjectHandler(c *gin.Context) {
 	var project models.Project
 	user := c.MustGet("user").(models.User)
@@ -102,6 +139,21 @@ func CreateProjectHandler(c *gin.Context) {
 }
 
 // TODO: adicionar validações de campos e melhorar retorno de erros
+
+// UpdateProjectHandler godoc
+// @Summary      Atualiza um projeto
+// @Description  Atualiza um projeto existente do usuário autenticado
+// @Tags         Projects
+// @Security     ApiKeyAuth
+// @Accept       json
+// @Produce      json
+// @Param        id       path      string                true  "ID do projeto"
+// @Param        project  body      models.ProjectSwagger true  "Dados do projeto atualizado"
+// @Success      200      {object}  map[string]string
+// @Failure      400      {object}  map[string]string
+// @Failure      404      {object}  map[string]string
+// @Failure      500      {object}  map[string]string
+// @Router       /projects/{id} [put]
 func UpdateProjectHandler(c *gin.Context) {
 	projectID := c.Param("id")
 	var project models.Project
@@ -128,6 +180,17 @@ func UpdateProjectHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Projeto atualizado com sucesso"})
 }
 
+// DeleteProjectHandler godoc
+// @Summary      Deleta um projeto
+// @Description  Remove um projeto do usuário autenticado
+// @Tags         Projects
+// @Security     ApiKeyAuth
+// @Produce      json
+// @Param        id   path      string  true  "ID do projeto"
+// @Success      200  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /projects/{id} [delete]
 func DeleteProjectHandler(c *gin.Context) {
 	projectID := c.Param("id")
 	user := c.MustGet("user").(models.User)
@@ -147,6 +210,17 @@ func DeleteProjectHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Projeto excluído com sucesso"})
 }
 
+// FavoriteProjectHandler godoc
+// @Summary      Favorita/Desfavorita um projeto
+// @Description  Alterna o status de favorito de um projeto do usuário
+// @Tags         Projects
+// @Security     ApiKeyAuth
+// @Produce      json
+// @Param        id   path      string  true  "ID do projeto"
+// @Success      204  {string}  string  "No Content"
+// @Failure      404  {object}  map[string]string
+// @Failure      500  {object}  map[string]string
+// @Router       /projects/{id}/favorite [patch]
 func FavoriteProjectHandler(c *gin.Context) {
 	projectID := c.Param("id")
 	user := c.MustGet("user").(models.User)
@@ -175,6 +249,15 @@ func FavoriteProjectHandler(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+// ExportProjectsToCSVHandler godoc
+// @Summary      Exporta projetos para CSV
+// @Description  Exporta todos os projetos do usuário autenticado em formato CSV
+// @Tags         Projects
+// @Security     ApiKeyAuth
+// @Produce      text/csv
+// @Success      200  {string}  string  "Arquivo CSV"
+// @Failure      500  {object}  map[string]string
+// @Router       /projects/export/csv [get]
 func ExportProjectsToCSVHandler(c *gin.Context) {
 	user := c.MustGet("user").(models.User)
 

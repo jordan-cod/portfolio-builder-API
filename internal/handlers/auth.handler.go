@@ -8,6 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Register godoc
+// @Summary Registra um novo usuário
+// @Description Cria um novo usuário na plataforma com nome, email e senha
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param registerData body models.RegisterInput true "Dados para registro"
+// @Success 201 {object} models.RegisterResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 409 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /register [post]
 func Register(c *gin.Context) {
 	var input struct {
 		Name     string `json:"name"`

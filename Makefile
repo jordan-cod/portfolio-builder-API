@@ -15,6 +15,9 @@ run: build
 dev:
 	air
 
+swagger:
+	swag init -g cmd/main.go
+
 clean:
 	rm -rf $(BIN_DIR)
 

@@ -21,6 +21,15 @@
 
 **Portfolio Builder API** is an open-source project that provides developers with a robust API to create and manage their portfolios. With RESTful endpoints, users can easily manage projects, skills, and experiences, facilitating a seamless portfolio creation process. The project is built with Golang, enhancing development efficiency.
 
+## 📚 API Documentation
+
+The Portfolio Builder API is fully documented using [Swagger (OpenAPI)](https://swagger.io/), allowing developers to easily explore and test all available endpoints.
+
+🔗 You can access the live, interactive API documentation here:  
+👉 [portfolio-builder.site/docs](https://portfolio-builder.site/api/swagger/index.html)
+
+This provides a user-friendly interface to view all routes, request/response formats, authentication requirements, and model schemas.
+
 ## <a name="contributing"> Contributing
 
 ### Fork and clone your repository
