@@ -15,21 +15,26 @@ func SetupRoutes(r *gin.Engine) {
 
 	api := r.Group("/api")
 	{
+
 		api.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 		api.POST("/register", handlers.Register)
 		api.GET("/health", handlers.HealthCheck)
 
-		projects := api.Group("/projects", middlewares.APIKeyAuthMiddleware())
+		protected := api.Group("/", middlewares.APIKeyAuthMiddleware())
 		{
-			projects.POST("/", handlers.CreateProjectHandler)
-			projects.GET("/", middlewares.PaginateMiddleware, handlers.GetAllProjectsHandler)
-			projects.GET("/:id", handlers.GetOneProjectHandler)
-			projects.PUT("/:id", handlers.UpdateProjectHandler)
-			projects.DELETE("/:id", handlers.DeleteProjectHandler)
+			protected.POST("/user/api-key", handlers.RenewAPIKey)
 
-			projects.PATCH("/:id/favorite", handlers.FavoriteProjectHandler)
-
-			projects.GET("/export/csv", handlers.ExportProjectsToCSVHandler)
+			projects := protected.Group("/projects")
+			{
+				projects.POST("/", handlers.CreateProjectHandler)
+				projects.GET("/", middlewares.PaginateMiddleware, handlers.GetAllProjectsHandler)
+				projects.GET("/:id", handlers.GetOneProjectHandler)
+				projects.PUT("/:id", handlers.UpdateProjectHandler)
+				projects.DELETE("/:id", handlers.DeleteProjectHandler)
+				projects.PATCH("/:id/favorite", handlers.FavoriteProjectHandler)
+				projects.GET("/export/csv", handlers.ExportProjectsToCSVHandler)
+			}
 		}
 	}
 }

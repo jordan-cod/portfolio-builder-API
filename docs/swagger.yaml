@@ -81,16 +81,15 @@ definitions:
         example: Usuário cadastrado com sucesso
         type: string
     type: object
-host: https://portfolio-builder.site
 info:
   contact: {}
-  description: Uma API open source para o gerenciamento de portfólios de desenvolvedores.
+  description: An open source API for managing developer portfolios.
   title: Portfolio Builder API
   version: "1.0"
 paths:
   /health:
     get:
-      description: Retorna uma mensagem simples para indicar que o servidor está rodando
+      description: Returns a simple message to confirm the server is running
       produces:
       - application/json
       responses:
@@ -98,26 +97,26 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.HealthResponse'
-      summary: Verifica o status da API
+      summary: Check API health
       tags:
       - health
   /projects:
     get:
-      description: Retorna todos os projetos com paginação, ordenação e total de registros
+      description: Returns all user's projects with pagination and sorting
       parameters:
-      - description: Página atual
+      - description: Current page
         in: query
         name: page
         type: integer
-      - description: Tamanho da página
+      - description: Page size
         in: query
         name: size
         type: integer
-      - description: 'Campo para ordenar (ex: name, created_at)'
+      - description: Sort field (e.g. name, created_at)
         in: query
         name: sort
         type: string
-      - description: Ordem (asc ou desc)
+      - description: Sort order (asc or desc)
         in: query
         name: order
         type: string
@@ -136,15 +135,15 @@ paths:
             type: object
       security:
       - ApiKeyAuth: []
-      summary: Lista todos os projetos do usuário
+      summary: Get all projects
       tags:
       - Projects
     post:
       consumes:
       - application/json
-      description: Cria um novo projeto para o usuário autenticado
+      description: Creates a new project for the authenticated user
       parameters:
-      - description: Dados do projeto
+      - description: Project data
         in: body
         name: project
         required: true
@@ -171,14 +170,14 @@ paths:
             type: object
       security:
       - ApiKeyAuth: []
-      summary: Cria um novo projeto
+      summary: Create a project
       tags:
       - Projects
   /projects/{id}:
     delete:
-      description: Remove um projeto do usuário autenticado
+      description: Deletes a project from the authenticated user
       parameters:
-      - description: ID do projeto
+      - description: Project ID
         in: path
         name: id
         required: true
@@ -206,13 +205,13 @@ paths:
             type: object
       security:
       - ApiKeyAuth: []
-      summary: Deleta um projeto
+      summary: Delete a project
       tags:
       - Projects
     get:
-      description: Retorna um projeto específico do usuário autenticado
+      description: Returns a specific project by ID for the authenticated user
       parameters:
-      - description: ID do projeto
+      - description: Project ID
         in: path
         name: id
         required: true
@@ -238,20 +237,20 @@ paths:
             type: object
       security:
       - ApiKeyAuth: []
-      summary: Busca um projeto por ID
+      summary: Get project by ID
       tags:
       - Projects
     put:
       consumes:
       - application/json
-      description: Atualiza um projeto existente do usuário autenticado
+      description: Updates a project of the authenticated user
       parameters:
-      - description: ID do projeto
+      - description: Project ID
         in: path
         name: id
         required: true
         type: string
-      - description: Dados do projeto atualizado
+      - description: Updated project data
         in: body
         name: project
         required: true
@@ -286,14 +285,14 @@ paths:
             type: object
       security:
       - ApiKeyAuth: []
-      summary: Atualiza um projeto
+      summary: Update a project
       tags:
       - Projects
   /projects/{id}/favorite:
     patch:
-      description: Alterna o status de favorito de um projeto do usuário
+      description: Toggles the favorite status of a project
       parameters:
-      - description: ID do projeto
+      - description: Project ID
         in: path
         name: id
         required: true
@@ -319,17 +318,17 @@ paths:
             type: object
       security:
       - ApiKeyAuth: []
-      summary: Favorita/Desfavorita um projeto
+      summary: Toggle favorite
       tags:
       - Projects
   /projects/export/csv:
     get:
-      description: Exporta todos os projetos do usuário autenticado em formato CSV
+      description: Exports all authenticated user's projects in CSV format
       produces:
       - text/csv
       responses:
         "200":
-          description: Arquivo CSV
+          description: CSV file
           schema:
             type: string
         "500":
@@ -340,16 +339,16 @@ paths:
             type: object
       security:
       - ApiKeyAuth: []
-      summary: Exporta projetos para CSV
+      summary: Export projects to CSV
       tags:
       - Projects
   /register:
     post:
       consumes:
       - application/json
-      description: Cria um novo usuário na plataforma com nome, email e senha
+      description: Creates a new user with name, email, and password
       parameters:
-      - description: Dados para registro
+      - description: User registration data
         in: body
         name: registerData
         required: true
@@ -374,7 +373,37 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Registra um novo usuário
+      summary: Registers a new user
+      tags:
+      - auth
+  /user/api-key:
+    post:
+      description: Generates a new API key for the authenticated user and replaces
+        the old one
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: API key successfully rotated
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: Rotate the user's API key
       tags:
       - auth
 swagger: "2.0"

@@ -25,16 +25,16 @@ func getProjectRepo() *repository.ProjectRepository {
 // Alterar toda lógica de negócios para arquivos de service
 
 // GetAllProjectsHandler godoc
-// @Summary      Lista todos os projetos do usuário
-// @Description  Retorna todos os projetos com paginação, ordenação e total de registros
+// @Summary      Get all projects
+// @Description  Returns all user's projects with pagination and sorting
 // @Tags         Projects
 // @Security     ApiKeyAuth
 // @Produce      json
-// @Param        page   query     int     false  "Página atual"
-// @Param        size   query     int     false  "Tamanho da página"
-// @Param        sort   query     string  false  "Campo para ordenar (ex: name, created_at)"
-// @Param        order  query     string  false  "Ordem (asc ou desc)"
-// @Success 200 {object} models.ProjectListResponse
+// @Param        page   query     int     false  "Current page"
+// @Param        size   query     int     false  "Page size"
+// @Param        sort   query     string  false  "Sort field (e.g. name, created_at)"
+// @Param        order  query     string  false  "Sort order (asc or desc)"
+// @Success      200    {object}  models.ProjectListResponse
 // @Failure      500    {object}  map[string]string
 // @Router       /projects [get]
 func GetAllProjectsHandler(c *gin.Context) {
@@ -51,15 +51,15 @@ func GetAllProjectsHandler(c *gin.Context) {
 	query := db.DB.Model(&models.Project{}).Where("user_id = ?", user.ID)
 
 	if err := query.Count(&totalCount).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao contar projetos"})
-		log.Println("Erro ao contar projetos:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to count projects"})
+		log.Println("Count error:", err)
 		return
 	}
 
 	offset := (page - 1) * limit
 
 	if err := query.Order(sort + " " + order).Offset(offset).Limit(limit).Find(&projects).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar projetos"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch projects"})
 		return
 	}
 
@@ -72,47 +72,45 @@ func GetAllProjectsHandler(c *gin.Context) {
 }
 
 // GetOneProjectHandler godoc
-// @Summary      Busca um projeto por ID
-// @Description  Retorna um projeto específico do usuário autenticado
+// @Summary      Get project by ID
+// @Description  Returns a specific project by ID for the authenticated user
 // @Tags         Projects
 // @Security     ApiKeyAuth
 // @Produce      json
-// @Param        id   path      string  true  "ID do projeto"
+// @Param        id   path      string  true  "Project ID"
 // @Success      200  {object}  models.ProjectSwagger
 // @Failure      404  {object}  map[string]string
 // @Failure      500  {object}  map[string]string
 // @Router       /projects/{id} [get]
 func GetOneProjectHandler(c *gin.Context) {
-	projectRepo := getProjectRepo()
-
 	projectID := c.Param("id")
 	user := c.MustGet("user").(models.User)
 
-	project, err := projectRepo.FindByUserID(projectID, user.ID)
+	project, err := getProjectRepo().FindByUserID(projectID, user.ID)
 
 	if err != nil {
 		if err.Error() == "record not found" {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Projeto não encontrado"})
+			c.JSON(http.StatusNotFound, gin.H{"error": "Project not found"})
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar projeto"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve project"})
 		}
-		log.Println("Erro ao buscar projeto:", err)
+		log.Println("Find error:", err)
 		return
 	}
 
-	c.JSON(200, project)
+	c.JSON(http.StatusOK, project)
 }
 
 // TODO: adicionar validações de campos e melhorar retorno de erros
 
 // CreateProjectHandler godoc
-// @Summary      Cria um novo projeto
-// @Description  Cria um novo projeto para o usuário autenticado
+// @Summary      Create a project
+// @Description  Creates a new project for the authenticated user
 // @Tags         Projects
 // @Security     ApiKeyAuth
 // @Accept       json
 // @Produce      json
-// @Param        project  body      models.ProjectSwagger  true  "Dados do projeto"
+// @Param        project  body      models.ProjectSwagger  true  "Project data"
 // @Success      201      {object}  models.ProjectSwagger
 // @Failure      400      {object}  map[string]string
 // @Failure      500      {object}  map[string]string
@@ -122,16 +120,16 @@ func CreateProjectHandler(c *gin.Context) {
 	user := c.MustGet("user").(models.User)
 
 	if err := c.ShouldBindJSON(&project); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
-		log.Println("Erro ao bindar dados:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		log.Println("Bind error:", err)
 		return
 	}
 
 	project.UserID = user.ID
 
 	if err := db.DB.Create(&project).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar projeto"})
-		log.Println("Erro ao criar projeto:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create project"})
+		log.Println("Create error:", err)
 		return
 	}
 
@@ -141,14 +139,14 @@ func CreateProjectHandler(c *gin.Context) {
 // TODO: adicionar validações de campos e melhorar retorno de erros
 
 // UpdateProjectHandler godoc
-// @Summary      Atualiza um projeto
-// @Description  Atualiza um projeto existente do usuário autenticado
+// @Summary      Update a project
+// @Description  Updates a project of the authenticated user
 // @Tags         Projects
 // @Security     ApiKeyAuth
 // @Accept       json
 // @Produce      json
-// @Param        id       path      string                true  "ID do projeto"
-// @Param        project  body      models.ProjectSwagger true  "Dados do projeto atualizado"
+// @Param        id       path      string                true  "Project ID"
+// @Param        project  body      models.ProjectSwagger true  "Updated project data"
 // @Success      200      {object}  map[string]string
 // @Failure      400      {object}  map[string]string
 // @Failure      404      {object}  map[string]string
@@ -160,33 +158,33 @@ func UpdateProjectHandler(c *gin.Context) {
 	user := c.MustGet("user").(models.User)
 
 	if err := c.ShouldBindJSON(&project); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
-		log.Println("Erro ao bindar dados:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		log.Println("Bind error:", err)
 		return
 	}
 
 	result := db.DB.Model(&models.Project{}).Where("id = ? AND user_id = ?", projectID, user.ID).Updates(project)
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar projeto"})
-		log.Println("Erro ao atualizar projeto:", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update project"})
+		log.Println("Update error:", result.Error)
 		return
 	}
 
 	if result.RowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Projeto não encontrado"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Project not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Projeto atualizado com sucesso"})
+	c.JSON(http.StatusOK, gin.H{"message": "Project updated successfully"})
 }
 
 // DeleteProjectHandler godoc
-// @Summary      Deleta um projeto
-// @Description  Remove um projeto do usuário autenticado
+// @Summary      Delete a project
+// @Description  Deletes a project from the authenticated user
 // @Tags         Projects
 // @Security     ApiKeyAuth
 // @Produce      json
-// @Param        id   path      string  true  "ID do projeto"
+// @Param        id   path      string  true  "Project ID"
 // @Success      200  {object}  map[string]string
 // @Failure      404  {object}  map[string]string
 // @Failure      500  {object}  map[string]string
@@ -197,26 +195,26 @@ func DeleteProjectHandler(c *gin.Context) {
 
 	result := db.DB.Delete(&models.Project{}, "id = ? AND user_id = ?", projectID, user.ID)
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao excluir projeto"})
-		log.Println("Erro ao excluir projeto:", result.Error)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete project"})
+		log.Println("Delete error:", result.Error)
 		return
 	}
 
 	if result.RowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Projeto não encontrado"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Project not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Projeto excluído com sucesso"})
+	c.JSON(http.StatusOK, gin.H{"message": "Project deleted successfully"})
 }
 
 // FavoriteProjectHandler godoc
-// @Summary      Favorita/Desfavorita um projeto
-// @Description  Alterna o status de favorito de um projeto do usuário
+// @Summary      Toggle favorite
+// @Description  Toggles the favorite status of a project
 // @Tags         Projects
 // @Security     ApiKeyAuth
 // @Produce      json
-// @Param        id   path      string  true  "ID do projeto"
+// @Param        id   path      string  true  "Project ID"
 // @Success      204  {string}  string  "No Content"
 // @Failure      404  {object}  map[string]string
 // @Failure      500  {object}  map[string]string
@@ -230,19 +228,19 @@ func FavoriteProjectHandler(c *gin.Context) {
 	result := db.DB.First(&project, "id = ? AND user_id = ?", projectID, user.ID)
 	if result.Error != nil {
 		if result.Error.Error() == "record not found" {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Projeto não encontrado ou não pertence a você"})
+			c.JSON(http.StatusNotFound, gin.H{"error": "Project not found or does not belong to you"})
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar projeto"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve project"})
 		}
-		log.Println("Erro ao buscar projeto:", result.Error)
+		log.Println("Find error:", result.Error)
 		return
 	}
 
 	project.IsFavorited = !project.IsFavorited
 
 	if err := db.DB.Save(&project).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar favorito"})
-		log.Println("Erro ao atualizar favorito:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to toggle favorite"})
+		log.Println("Favorite error:", err)
 		return
 	}
 
@@ -250,12 +248,12 @@ func FavoriteProjectHandler(c *gin.Context) {
 }
 
 // ExportProjectsToCSVHandler godoc
-// @Summary      Exporta projetos para CSV
-// @Description  Exporta todos os projetos do usuário autenticado em formato CSV
+// @Summary      Export projects to CSV
+// @Description  Exports all authenticated user's projects in CSV format
 // @Tags         Projects
 // @Security     ApiKeyAuth
 // @Produce      text/csv
-// @Success      200  {string}  string  "Arquivo CSV"
+// @Success      200  {string}  string  "CSV file"
 // @Failure      500  {object}  map[string]string
 // @Router       /projects/export/csv [get]
 func ExportProjectsToCSVHandler(c *gin.Context) {
@@ -263,13 +261,13 @@ func ExportProjectsToCSVHandler(c *gin.Context) {
 
 	var projects []models.Project
 	if err := db.DB.Where("user_id = ?", user.ID).Find(&projects).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar projetos"})
-		log.Println("Erro ao buscar projetos:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch projects"})
+		log.Println("Fetch error:", err)
 		return
 	}
 
 	var csvContent []string
-	csvContent = append(csvContent, "ID,Nome,Descrição,Status,Repo URL,Tecnologias,Data de Criação")
+	csvContent = append(csvContent, "ID,Name,Description,Status,Repo URL,Tech Stack,Created At")
 
 	for _, project := range projects {
 		line := fmt.Sprintf("%s,%s,%s,%s,%s,%s,%s",
@@ -285,15 +283,15 @@ func ExportProjectsToCSVHandler(c *gin.Context) {
 	}
 
 	c.Header("Content-Type", "text/csv")
-	c.Header("Content-Disposition", "attachment;filename=projetos.csv")
+	c.Header("Content-Disposition", "attachment;filename=projects.csv")
 	c.Writer.WriteHeader(http.StatusOK)
 	csvWriter := csv.NewWriter(c.Writer)
 
 	for _, line := range csvContent {
 		record := strings.Split(line, ",")
 		if err := csvWriter.Write(record); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao gerar CSV"})
-			log.Println("Erro ao escrever no CSV:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to write CSV"})
+			log.Println("CSV write error:", err)
 			return
 		}
 	}

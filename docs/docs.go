@@ -17,14 +17,14 @@ const docTemplate = `{
     "paths": {
         "/health": {
             "get": {
-                "description": "Retorna uma mensagem simples para indicar que o servidor está rodando",
+                "description": "Returns a simple message to confirm the server is running",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "health"
                 ],
-                "summary": "Verifica o status da API",
+                "summary": "Check API health",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -42,36 +42,36 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retorna todos os projetos com paginação, ordenação e total de registros",
+                "description": "Returns all user's projects with pagination and sorting",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Lista todos os projetos do usuário",
+                "summary": "Get all projects",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Página atual",
+                        "description": "Current page",
                         "name": "page",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "Tamanho da página",
+                        "description": "Page size",
                         "name": "size",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Campo para ordenar (ex: name, created_at)",
+                        "description": "Sort field (e.g. name, created_at)",
                         "name": "sort",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "Ordem (asc ou desc)",
+                        "description": "Sort order (asc or desc)",
                         "name": "order",
                         "in": "query"
                     }
@@ -100,7 +100,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Cria um novo projeto para o usuário autenticado",
+                "description": "Creates a new project for the authenticated user",
                 "consumes": [
                     "application/json"
                 ],
@@ -110,10 +110,10 @@ const docTemplate = `{
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Cria um novo projeto",
+                "summary": "Create a project",
                 "parameters": [
                     {
-                        "description": "Dados do projeto",
+                        "description": "Project data",
                         "name": "project",
                         "in": "body",
                         "required": true,
@@ -157,17 +157,17 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Exporta todos os projetos do usuário autenticado em formato CSV",
+                "description": "Exports all authenticated user's projects in CSV format",
                 "produces": [
                     "text/csv"
                 ],
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Exporta projetos para CSV",
+                "summary": "Export projects to CSV",
                 "responses": {
                     "200": {
-                        "description": "Arquivo CSV",
+                        "description": "CSV file",
                         "schema": {
                             "type": "string"
                         }
@@ -191,18 +191,18 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Retorna um projeto específico do usuário autenticado",
+                "description": "Returns a specific project by ID for the authenticated user",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Busca um projeto por ID",
+                "summary": "Get project by ID",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID do projeto",
+                        "description": "Project ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -241,7 +241,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Atualiza um projeto existente do usuário autenticado",
+                "description": "Updates a project of the authenticated user",
                 "consumes": [
                     "application/json"
                 ],
@@ -251,17 +251,17 @@ const docTemplate = `{
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Atualiza um projeto",
+                "summary": "Update a project",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID do projeto",
+                        "description": "Project ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Dados do projeto atualizado",
+                        "description": "Updated project data",
                         "name": "project",
                         "in": "body",
                         "required": true,
@@ -315,18 +315,18 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Remove um projeto do usuário autenticado",
+                "description": "Deletes a project from the authenticated user",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Deleta um projeto",
+                "summary": "Delete a project",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID do projeto",
+                        "description": "Project ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -370,18 +370,18 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Alterna o status de favorito de um projeto do usuário",
+                "description": "Toggles the favorite status of a project",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Favorita/Desfavorita um projeto",
+                "summary": "Toggle favorite",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID do projeto",
+                        "description": "Project ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -417,7 +417,7 @@ const docTemplate = `{
         },
         "/register": {
             "post": {
-                "description": "Cria um novo usuário na plataforma com nome, email e senha",
+                "description": "Creates a new user with name, email, and password",
                 "consumes": [
                     "application/json"
                 ],
@@ -427,10 +427,10 @@ const docTemplate = `{
                 "tags": [
                     "auth"
                 ],
-                "summary": "Registra um novo usuário",
+                "summary": "Registers a new user",
                 "parameters": [
                     {
-                        "description": "Dados para registro",
+                        "description": "User registration data",
                         "name": "registerData",
                         "in": "body",
                         "required": true,
@@ -462,6 +462,52 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/api-key": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Generates a new API key for the authenticated user and replaces the old one",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Rotate the user's API key",
+                "responses": {
+                    "200": {
+                        "description": "API key successfully rotated",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
                 }
@@ -591,11 +637,11 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "https://portfolio-builder.site",
+	Host:             "",
 	BasePath:         "/api",
 	Schemes:          []string{},
 	Title:            "Portfolio Builder API",
-	Description:      "Uma API open source para o gerenciamento de portfólios de desenvolvedores.",
+	Description:      "An open source API for managing developer portfolios.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

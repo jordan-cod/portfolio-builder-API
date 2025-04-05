@@ -15,9 +15,9 @@ import (
 
 // @title Portfolio Builder API
 // @version 1.0
-// @description Uma API open source para o gerenciamento de portfólios de desenvolvedores.
-// @host https://portfolio-builder.site
+// @description An open source API for managing developer portfolios.
 // @BasePath /api
+
 func main() {
 	config.LoadEnv()
 

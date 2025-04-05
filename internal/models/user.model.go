@@ -1,9 +1,7 @@
 package models
 
 import (
-	"crypto/rand"
-	"encoding/base64"
-	"errors"
+	"portfolio-backend/internal/utils"
 	"time"
 
 	"github.com/google/uuid"
@@ -28,23 +26,10 @@ func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
 	}
 	user.Password = string(hashedPassword)
 
-	user.APIKey, err = generateAPIKey()
+	user.APIKey, err = utils.GenerateAPIKey()
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func generateAPIKey() (string, error) {
-	bytes := make([]byte, 32)
-	_, err := rand.Read(bytes)
-	if err != nil {
-		return "", errors.New("erro ao gerar API key: " + err.Error())
-	}
-	apiKey := base64.URLEncoding.EncodeToString(bytes)
-	if apiKey == "" {
-		return "", errors.New("API key gerada vazia")
-	}
-	return apiKey, nil
 }

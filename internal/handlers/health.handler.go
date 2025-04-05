@@ -7,11 +7,11 @@ import (
 )
 
 // HealthCheck godoc
-// @Summary Verifica o status da API
-// @Description Retorna uma mensagem simples para indicar que o servidor está rodando
+// @Summary Check API health
+// @Description Returns a simple message to confirm the server is running
 // @Tags health
 // @Produce json
-// @Success 200 {object} models.HealthResponse
+// @Success      200  {object}  models.HealthResponse
 // @Router /health [get]
 func HealthCheck(c *gin.Context) {
 
